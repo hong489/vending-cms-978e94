@@ -32,6 +32,10 @@ import SingleCbStage1AgreePage from "../components/CbStage1AgreePage/SingleCbSta
 import CbStage2AgreePage from "../components/CbStage2AgreePage/CbStage2AgreePage";
 import SingleCbStage2AgreePage from "../components/CbStage2AgreePage/SingleCbStage2AgreePage";
 // ~cb-add-import~
+import Kanban from '../components/Dashboard/Kanban';
+import HCFORM from '../components/Dashboard/HCFORM';
+import CBFORM from  '../components/Dashboard/CBFORM';
+import FormList from '../components/Dashboard/FormList';
 
 const MyRouter = () => {
     return (
@@ -40,6 +44,11 @@ const MyRouter = () => {
             <Route path="/dashboard" exact element={<Dashboard />} />
             <Route path="/login" exact element={<LoginPage />} />
             <Route path="/signup" exact element={<SignUpPage />} />
+            <Route path="/kanban" exact element= {<Kanban/>} />
+            <Route path="/HCFORM" exact  element={<HCFORM />} />
+            <Route path="/CBFORM" exact  element={<CBFORM />} />
+            <Route path="/FormList" exact element={<FormList/>}/>
+            
             {/* protected route https://www.robinwieruch.de/react-router-private-routes/ */}
 
             <Route element={<ProtectedRoute redirectPath={'/login'} />}>

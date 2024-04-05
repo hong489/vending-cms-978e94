@@ -13,7 +13,7 @@ const cbStage2Agree = require("./cbStage2Agree/cbStage2Agree.service.js");
 
 // eslint-disable-next-line no-unused-vars
 module.exports = function (app) {
-    app.configure(users);
+  app.configure(users);
   app.configure(hCMasterForm);
   app.configure(cBMasterForm);
   app.configure(hcStage1);
@@ -24,5 +24,5 @@ module.exports = function (app) {
   app.configure(cbStage2);
   app.configure(cbStage1Agree);
   app.configure(cbStage2Agree);
-    // ~cb-add-configure-service-name~
+  // ~cb-add-configure-service-name~
 };

@@ -12,6 +12,7 @@
         "@testing-library/react": "^13.4.0",
         "@testing-library/user-event": "^13.5.0",
         "axios": "^1.5.0",
+        "chart.js": "^4.4.2",
         "classnames": "^2.2.6",
         "env-cmd": "^10.1.0",
         "lodash": "^4.17.21",
@@ -27,10 +28,11 @@
         "react-router-dom": "^6.15.0",
         "react-scripts": "5.0.1",
         "redux": "^5.0.1",
+        "ripple": "^0.1.2",
         "sass": "^1.66.1"
     },
     "scripts": {
-        "environment" : "npm run --silent cmd && npm install --quiet --no-progress && npm run welcome && npm run format",
+        "environment": "npm run --silent cmd && npm install --quiet --no-progress && npm run welcome && npm run format",
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
@@ -41,12 +43,10 @@
         "moveCMD": "if exist .env_example rename .env_example .env",
         "movePS": "if Test-Path -Path .env_example 'Rename-Item -Path .\\.env_example .\\.env'",
         "welcome": "\"echo \"Welcome to CodeBridge Ai Code Generator\" \"",
-        
         "launch": "npm run --silent cmd && npm install --quiet --no-progress && npm run welcome && npm run format && npm run start"
     },
     "eslintConfig": {
-        "extends": [
-        ]
+        "extends": []
     },
     "browserslist": {
         "production": [

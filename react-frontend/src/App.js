@@ -5,6 +5,7 @@ import MyRouter from './MyRouter/MyRouter';
 import store from './store';
 import { AppConfigStatic } from './AppConfigStatic';
 import AppTopbar from './components/Layouts/AppTopbar';
+import AppSidebar from './components/Layouts/SideBar';
 import AppFooter from './components/Layouts/AppFooter';
 import MainLayout from './components/Layouts/MainLayout';
 import LoadingWrapper from './MyRouter/wrappers/LoadingWrapper';
@@ -26,6 +27,7 @@ const App = () => {
             {location.pathname === '/login' ? null : <AppTopbar />}
             <MainLayout>
                 <MyRouter />
+                <AppSidebar />
                 <AppFooter />
             </MainLayout>
 
