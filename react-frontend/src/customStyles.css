@@ -7,10 +7,12 @@
     font-family: "Praktika";
     src: local("Praktika"), url(./assets/fonts/Praktika-Light.otf) format("opentype");
 }
+
 @font-face {
     font-family: "MarlinGeo";
     src: local("MarlinGeo"), url(./assets/fonts/MarlinGeo-Regular.otf) format("opentype");
 }
+
 @font-face {
     font-family: "MarlinGeo-Bold";
     src: local("MarlinGeo-Bold"), url(./assets/fonts/MarlinGeo-Bold.otf) format("opentype");
@@ -19,6 +21,7 @@
 .hover:hover {
     cursor: pointer;
 }
+
 .zoom:hover {
     transform: scale(102%);
 }
@@ -61,4 +64,316 @@
 
 .bord {
     border: 1px solid rgb(255, 5, 255);
+}
+
+
+@layer primereact {
+    .p-sidebar-mask {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        pointer-events: none;
+        background-color: transparent;
+        transition-property: background-color;
+    }
+
+    .p-sidebar-visible {
+        display: flex;
+    }
+
+    .p-sidebar-mask.p-component-overlay {
+        pointer-events: auto;
+    }
+
+    .p-sidebar {
+        display: flex;
+        flex-direction: column;
+        pointer-events: auto;
+        transform: translate3d(0px, 0px, 0px);
+        position: relative;
+    }
+
+    .p-sidebar-content {
+        overflow-y: auto;
+        flex-grow: 1;
+    }
+
+    .p-sidebar-header {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .p-sidebar-custom-header {
+        justify-content: space-between;
+    }
+
+    .p-sidebar-icons {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    .p-sidebar-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .p-sidebar-full .p-sidebar {
+        transition: none;
+        transform: none;
+        width: 100vw;
+        height: 100vh;
+        max-height: 100%;
+        top: 0px;
+        left: 0px;
+    }
+
+    /* Animation */
+    /* Top, Bottom, Left and Right */
+    .p-sidebar-top .p-sidebar-enter,
+    .p-sidebar-top .p-sidebar-exit-active {
+        transform: translate3d(0px, -100%, 0px);
+    }
+
+    .p-sidebar-bottom .p-sidebar-enter,
+    .p-sidebar-bottom .p-sidebar-exit-active {
+        transform: translate3d(0px, 100%, 0px);
+    }
+
+    .p-sidebar-left .p-sidebar-enter,
+    .p-sidebar-left .p-sidebar-exit-active {
+        transform: translate3d(-100%, 0px, 0px);
+    }
+
+    .p-sidebar-right .p-sidebar-enter,
+    .p-sidebar-right .p-sidebar-exit-active {
+        transform: translate3d(100%, 0px, 0px);
+    }
+
+    .p-sidebar-top .p-sidebar-enter-active,
+    .p-sidebar-bottom .p-sidebar-enter-active,
+    .p-sidebar-left .p-sidebar-enter-active,
+    .p-sidebar-right .p-sidebar-enter-active {
+        transform: translate3d(0px, 0px, 0px);
+        transition: all 0.3s;
+    }
+
+    .p-sidebar-top .p-sidebar-enter-done,
+    .p-sidebar-bottom .p-sidebar-enter-done,
+    .p-sidebar-left .p-sidebar-enter-done,
+    .p-sidebar-right .p-sidebar-enter-done {
+        transform: none;
+    }
+
+    .p-sidebar-top .p-sidebar-exit-active,
+    .p-sidebar-bottom .p-sidebar-exit-active,
+    .p-sidebar-left .p-sidebar-exit-active,
+    .p-sidebar-right .p-sidebar-exit-active {
+        transition: all 0.3s;
+    }
+
+    /* Full */
+    .p-sidebar-full .p-sidebar-enter {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+
+    .p-sidebar-full .p-sidebar-enter-active {
+        opacity: 1;
+        transform: scale(1);
+        transition: all 0.15s cubic-bezier(0, 0, 0.2, 1);
+    }
+
+    .p-sidebar-full .p-sidebar-enter-done {
+        transform: none;
+    }
+
+    .p-sidebar-full .p-sidebar-exit-active {
+        opacity: 0;
+        transform: scale(0.5);
+        transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Size */
+    .p-sidebar-left .p-sidebar {
+        width: 20rem;
+        height: 100%;
+    }
+
+    .p-sidebar-right .p-sidebar {
+        width: 20rem;
+        height: 100%;
+    }
+
+    .p-sidebar-top .p-sidebar {
+        height: 10rem;
+        width: 100%;
+    }
+
+    .p-sidebar-bottom .p-sidebar {
+        height: 10rem;
+        width: 100%;
+    }
+
+    .p-sidebar-left .p-sidebar-sm,
+    .p-sidebar-right .p-sidebar-sm {
+        width: 20rem;
+    }
+
+    .p-sidebar-left .p-sidebar-md,
+    .p-sidebar-right .p-sidebar-md {
+        width: 40rem;
+    }
+
+    .p-sidebar-left .p-sidebar-lg,
+    .p-sidebar-right .p-sidebar-lg {
+        width: 60rem;
+    }
+
+    .p-sidebar-top .p-sidebar-sm,
+    .p-sidebar-bottom .p-sidebar-sm {
+        height: 10rem;
+    }
+
+    .p-sidebar-top .p-sidebar-md,
+    .p-sidebar-bottom .p-sidebar-md {
+        height: 20rem;
+    }
+
+    .p-sidebar-top .p-sidebar-lg,
+    .p-sidebar-bottom .p-sidebar-lg {
+        height: 30rem;
+    }
+
+    .p-sidebar-left .p-sidebar-view,
+    .p-sidebar-right .p-sidebar-view,
+    .p-sidebar-top .p-sidebar-view,
+    .p-sidebar-bottom .p-sidebar-view {
+        width: 100%;
+        height: 100%;
+    }
+
+    .p-sidebar-left .p-sidebar-content,
+    .p-sidebar-right .p-sidebar-content,
+    .p-sidebar-top .p-sidebar-content,
+    .p-sidebar-bottom .p-sidebar-content {
+        width: 100%;
+        height: 100%;
+    }
+
+    @media screen and (max-width: 64em) {
+
+        .p-sidebar-left .p-sidebar-lg,
+        .p-sidebar-left .p-sidebar-md,
+        .p-sidebar-right .p-sidebar-lg,
+        .p-sidebar-right .p-sidebar-md {
+            width: 20rem;
+        }
+    }
+
+
+
+
+}
+
+.p-calendar {
+    flex: 1 1 auto;
+    width: 170px;
+    height: 45px;
+
+}
+
+.custom-inputarea{
+    height: 50px;
+    width: 500px;   
+}
+.p-inputtext, .custom-inputarea {
+    flex: 1 1 auto;
+    width: 162px ;
+    height: 45px ;
+}
+
+.layout-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1;
+    width: 100px;
+    height: 100vh;
+    margin-top: 65px;
+}
+
+.replaceinput {
+    height: 30px;
+}
+
+.replacediv {
+    height: 41px
+}
+
+.input[type="checkbox"] {
+    transform: scale(5);
+    /* Adjust the scale factor as needed */
+    margin-right: 5px;
+    /* Add some spacing between the checkbox and the label */
+}
+
+.nested-grid>* {
+    grid-column: span 12;
+    text-align: center;
+}
+
+.col-fixed {
+    width: 90px;
+    height: 45px;
+}
+
+.grid-nogutter {
+    text-align: center;
+}
+
+.stageForm {
+    box-shadow: 0px 0px 5px 12px rgb(0, 0, 0);
+    background: #f7f1f1;
+}
+
+.basecard {
+    width: 1080px;
+    background: white;
+}
+
+
+.stage1,
+.stage1agreement {
+    background: #c8e3f9;
+}
+
+.stage2 {
+    margin-left: 20px;
+    background-color: #fff59d;
+}
+
+.list1 {
+    font-weight: bold;
+    border-top: 3px solid;
+    border-bottom: 2px solid;
+}
+
+.comp {
+    font-weight: 800;
+}
+
+.agreement {
+    font-weight: 800;
+    font-size: medium;
+}
+
+.image {
+    padding-top: 0;
+    border-radius: 5px;
 }

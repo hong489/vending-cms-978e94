@@ -34,42 +34,53 @@ import SingleCbStage2AgreePage from "../components/CbStage2AgreePage/SingleCbSta
 import TicketPage from "../components/TicketPage/TicketPage";
 import SingleTicketPage from "../components/TicketPage/SingleTicketPage";
 // ~cb-add-import~
-
+import Kanban from '../components/Dashboard/Kanban';
+import HCFORM from '../components/Dashboard/HC/HCFORM';
+import CBFORM from '../components/Dashboard/CB/CBFORM';
+import Technician from '../components/Dashboard/Technician';
+import RaiseTicket from '../components/Dashboard/RaiseTicket';
+import SuperVisor from '../components/Dashboard/supervisor/supervisor';
 const MyRouter = () => {
     return (
         <Routes>
-            <Route path="" exact element={<Dashboard />} />
+            <Route path="" exact element={<RaiseTicket />} />
             <Route path="/dashboard" exact element={<Dashboard />} />
             <Route path="/login" exact element={<LoginPage />} />
             <Route path="/signup" exact element={<SignUpPage />} />
+            <Route path="/kanban" exact element={<Kanban />} />
+            <Route path="/HCFORM" exact element={<HCFORM />} />
+            <Route path="/CBFORM" exact element={<CBFORM />} />
+            <Route path="/Technician" exact element={<Technician />} />
+            <Route path="/supervisor" exact element={<SuperVisor />} />
+            <Route path="/RaiseTicket" exact element={<RaiseTicket />} />
             {/* protected route https://www.robinwieruch.de/react-router-private-routes/ */}
 
             <Route element={<ProtectedRoute redirectPath={'/login'} />}>
                 <Route path="/account" exact element={<Account />} />
-                    <Route path="/users" exact element={<UsersPage />} />
-                    <Route path="/users/:singleUsersId" exact element={<SingleUsersPage />} />
-                    <Route path="/hCMasterForm" exact element={<HCMasterFormPage />} />
-                    <Route path="/hCMasterForm/:singleHCMasterFormId" exact element={<SingleHCMasterFormPage />} />
-                    <Route path="/cBMasterForm" exact element={<CBMasterFormPage />} />
-                    <Route path="/cBMasterForm/:singleCBMasterFormId" exact element={<SingleCBMasterFormPage />} />
-                    <Route path="/hcStage1" exact element={<HcStage1Page />} />
-                    <Route path="/hcStage1/:singleHcStage1Id" exact element={<SingleHcStage1Page />} />
-                    <Route path="/hcStage2" exact element={<HcStage2Page />} />
-                    <Route path="/hcStage2/:singleHcStage2Id" exact element={<SingleHcStage2Page />} />
-                    <Route path="/hcStage1Agree" exact element={<HcStage1AgreePage />} />
-                    <Route path="/hcStage1Agree/:singleHcStage1AgreeId" exact element={<SingleHcStage1AgreePage />} />
-                    <Route path="/hcStage2Agree" exact element={<HcStage2AgreePage />} />
-                    <Route path="/hcStage2Agree/:singleHcStage2AgreeId" exact element={<SingleHcStage2AgreePage />} />
-                    <Route path="/cbStage1" exact element={<CbStage1Page />} />
-                    <Route path="/cbStage1/:singleCbStage1Id" exact element={<SingleCbStage1Page />} />
-                    <Route path="/cbStage2" exact element={<CbStage2Page />} />
-                    <Route path="/cbStage2/:singleCbStage2Id" exact element={<SingleCbStage2Page />} />
-                    <Route path="/cbStage1Agree" exact element={<CbStage1AgreePage />} />
-                    <Route path="/cbStage1Agree/:singleCbStage1AgreeId" exact element={<SingleCbStage1AgreePage />} />
-                    <Route path="/cbStage2Agree" exact element={<CbStage2AgreePage />} />
-                    <Route path="/cbStage2Agree/:singleCbStage2AgreeId" exact element={<SingleCbStage2AgreePage />} />
-                    <Route path="/ticket" exact element={<TicketPage />} />
-                    <Route path="/ticket/:singleTicketId" exact element={<SingleTicketPage />} />
+                <Route path="/users" exact element={<UsersPage />} />
+                <Route path="/users/:singleUsersId" exact element={<SingleUsersPage />} />
+                <Route path="/hCMasterForm" exact element={<HCMasterFormPage />} />
+                <Route path="/hCMasterForm/:singleHCMasterFormId" exact element={<SingleHCMasterFormPage />} />
+                <Route path="/cBMasterForm" exact element={<CBMasterFormPage />} />
+                <Route path="/cBMasterForm/:singleCBMasterFormId" exact element={<SingleCBMasterFormPage />} />
+                <Route path="/hcStage1" exact element={<HcStage1Page />} />
+                <Route path="/hcStage1/:singleHcStage1Id" exact element={<SingleHcStage1Page />} />
+                <Route path="/hcStage2" exact element={<HcStage2Page />} />
+                <Route path="/hcStage2/:singleHcStage2Id" exact element={<SingleHcStage2Page />} />
+                <Route path="/hcStage1Agree" exact element={<HcStage1AgreePage />} />
+                <Route path="/hcStage1Agree/:singleHcStage1AgreeId" exact element={<SingleHcStage1AgreePage />} />
+                <Route path="/hcStage2Agree" exact element={<HcStage2AgreePage />} />
+                <Route path="/hcStage2Agree/:singleHcStage2AgreeId" exact element={<SingleHcStage2AgreePage />} />
+                <Route path="/cbStage1" exact element={<CbStage1Page />} />
+                <Route path="/cbStage1/:singleCbStage1Id" exact element={<SingleCbStage1Page />} />
+                <Route path="/cbStage2" exact element={<CbStage2Page />} />
+                <Route path="/cbStage2/:singleCbStage2Id" exact element={<SingleCbStage2Page />} />
+                <Route path="/cbStage1Agree" exact element={<CbStage1AgreePage />} />
+                <Route path="/cbStage1Agree/:singleCbStage1AgreeId" exact element={<SingleCbStage1AgreePage />} />
+                <Route path="/cbStage2Agree" exact element={<CbStage2AgreePage />} />
+                <Route path="/cbStage2Agree/:singleCbStage2AgreeId" exact element={<SingleCbStage2AgreePage />} />
+                <Route path="/ticket" exact element={<TicketPage />} />
+                <Route path="/ticket/:singleTicketId" exact element={<SingleTicketPage />} />
                 {/* ~cb-add-protected-route~ */}
             </Route>
             {/* ~cb-add-route~ */}

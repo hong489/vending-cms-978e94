@@ -14,7 +14,7 @@ const ticket = require("./ticket/ticket.service.js");
 
 // eslint-disable-next-line no-unused-vars
 module.exports = function (app) {
-    app.configure(users);
+  app.configure(users);
   app.configure(hCMasterForm);
   app.configure(cBMasterForm);
   app.configure(hcStage1);
@@ -26,5 +26,5 @@ module.exports = function (app) {
   app.configure(cbStage1Agree);
   app.configure(cbStage2Agree);
   app.configure(ticket);
-    // ~cb-add-configure-service-name~
+  // ~cb-add-configure-service-name~
 };
