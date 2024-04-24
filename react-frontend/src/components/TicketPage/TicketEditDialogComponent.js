@@ -179,10 +179,10 @@ const TicketCreateDialogComponent = (props) => {
         <small className="p-error">
           {Array.isArray(error)
             ? error.map((e, i) => (
-              <p className="m-0" key={i}>
-                {e}
-              </p>
-            ))
+                <p className="m-0" key={i}>
+                  {e}
+                </p>
+              ))
             : error}
         </small>
       </div>

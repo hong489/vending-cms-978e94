@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 import NoMatch from './NoMatch';
-
+import { connect } from "react-redux";
 import LoginPage from '../components/LoginPage/LoginPage';
 import SignUpPage from '../components/LoginPage/SignUpPage';
 import Account from '../components/Account/Account';
@@ -37,10 +37,13 @@ import SingleTicketPage from "../components/TicketPage/SingleTicketPage";
 import Kanban from '../components/Dashboard/Kanban';
 import HCFORM from '../components/Dashboard/HC/HCFORM';
 import CBFORM from '../components/Dashboard/CB/CBFORM';
-import Technician from '../components/Dashboard/Technician';
+import Technician from '../components/Dashboard/technician/Technician';
 import RaiseTicket from '../components/Dashboard/RaiseTicket';
 import SuperVisor from '../components/Dashboard/supervisor/supervisor';
-const MyRouter = () => {
+import HCFORMSinglePage from '../components/Dashboard/HC/HCFORMSinglePage';
+import CBFORMSinglePage from '../components/Dashboard/CB/CBFORMSinglePage';
+import SingleHCstage1 from "../components/Dashboard/HC/HCstage1SinglePage";
+const MyRouter = ({ user }) => {
     return (
         <Routes>
             <Route path="" exact element={<RaiseTicket />} />
@@ -53,8 +56,9 @@ const MyRouter = () => {
             <Route path="/Technician" exact element={<Technician />} />
             <Route path="/supervisor" exact element={<SuperVisor />} />
             <Route path="/RaiseTicket" exact element={<RaiseTicket />} />
+            <Route path="HCFORM/:singleHCMasterFormId" exact element={<HCFORMSinglePage />}/>
+            <Route path="CBFORM/:singleCBMasterFormId" exact element={<CBFORMSinglePage />}/>
             {/* protected route https://www.robinwieruch.de/react-router-private-routes/ */}
-
             <Route element={<ProtectedRoute redirectPath={'/login'} />}>
                 <Route path="/account" exact element={<Account />} />
                 <Route path="/users" exact element={<UsersPage />} />
@@ -82,6 +86,10 @@ const MyRouter = () => {
                 <Route path="/ticket" exact element={<TicketPage />} />
                 <Route path="/ticket/:singleTicketId" exact element={<SingleTicketPage />} />
                 {/* ~cb-add-protected-route~ */}
+                {/* {user?.userType === 'supervisor' && (
+                    <Route path="/supervisor/TicketTable" exact element={<SuperVisor />} />
+                )} */}
+
             </Route>
             {/* ~cb-add-route~ */}
 
@@ -89,5 +97,9 @@ const MyRouter = () => {
         </Routes>
     );
 };
+const mapState = (state) => {
+    const { user } = state.auth;
+    return { user };
+};
 
-export default MyRouter;
+export default connect(mapState)(MyRouter);

@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
 import client from "../../../services/restClient";
 import { Checkbox } from "primereact/checkbox";
 import { Button } from "primereact/button";
-import { Dialog } from "primereact/dialog";
 
 const getSchemaValidationErrorsStrings = (errorObj) => {
   let errMsg = [];
@@ -25,11 +23,10 @@ const CBstage1 = (props) => {
   const [loading, setLoading] = useState(false);
   const [stage1Status, setStage1Status] = useState({});
   const [Ref, setRef] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    set_entity(props.entity);
-  }, [props.show, props.entity]);
+    set_entity({});
+  }, [props.show]);
 
   const componentList = [
     "ExternalBody",
@@ -90,11 +87,11 @@ const CBstage1 = (props) => {
     setLoading(true);
 
     try {
-      await client.service("cbStage1").patch(_entity._id, _data);
+      const result = await client.service("cbStage1").create(_data);
       const eagerResult = await client.service("cbStage1").find({
         query: {
           $limit: 100,
-          _id: { $in: [_entity._id] },
+          _id: { $in: [result._id] },
           $populate: [
             {
               path: "Ref",
@@ -107,40 +104,44 @@ const CBstage1 = (props) => {
       props.onHide();
       props.alert({
         type: "success",
-        title: "Edit info",
+        title: "Create info",
         message: "Info cbStage1 updated successfully",
       });
-      props.onEditResult(eagerResult.data[0]);
+      // props.onCreateResult(eagerResult.data[0]);
       navigate("/technician");
     } catch (error) {
       console.log("error", error);
-      setError(
-        getSchemaValidationErrorsStrings(error) || "Failed to update info",
-      );
+      setError(getSchemaValidationErrorsStrings(error) || "Failed to create");
       props.alert({
         type: "error",
-        title: "Edit info",
-        message: "Failed to update info",
+        title: "Create",
+        message: "Failed to create",
       });
     }
     setLoading(false);
   };
 
-  const renderFooter = () => (
-    <div className="flex justify-content-end">
-      <Button
-        label="save"
-        className="p-button-text no-focus-effect"
-        onClick={onSave}
-        loading={loading}
-      />
-      <Button
-        label="close"
-        className="p-button-text no-focus-effect p-button-secondary"
-        onClick={props.onHide}
-      />
-    </div>
-  );
+  useEffect(() => {
+    //on mount cBMasterForm
+    client
+      .service("cBMasterForm")
+      .find({ query: { $limit: 100 } })
+      .then((res) => {
+        setRef(
+          res.data.map((e) => {
+            return { name: e["RefNo"], value: e._id };
+          }),
+        );
+      })
+      .catch((error) => {
+        console.log({ error });
+        props.alert({
+          title: "CBMasterForm",
+          type: "error",
+          message: error.message || "Failed get cBMasterForm",
+        });
+      });
+  }, []);
 
   const setValByKey = (component, header, checked) => {
     // Update the _entity state with the selected value based on the status
@@ -151,61 +152,55 @@ const CBstage1 = (props) => {
     setError("");
   };
 
+  const RefOptions = Ref.map((elem) => ({
+    name: elem.name,
+    value: elem.value,
+  }));
+
   return (
-    <Dialog
-      header="Edit info"
-      visible={props.show}
-      closable={false}
-      onHide={props.onHide}
-      modal
-      style={{ width: "45vw" }}
-      footer={renderFooter()}
-      resizable={false}
-    >
-      <div className="card grid nested-grid col-12 stage1">
-        <div className="text-center col-12 stagetitle">
-          <h3>STAGE 1</h3>
+    <div className="card grid nested-grid col-7 stage1">
+      <div className="text-center col-12 stagetitle">
+        <h3>STAGE 1</h3>
+      </div>
+      <div className="grid nested-grid col-12 list1">
+        <div className="col-fixed" style={{ width: "150px" }}>
+          <p>Component</p>
         </div>
-        <div className="grid nested-grid col-12 list1">
-          <div className="col-fixed" style={{ width: "150px" }}>
-            <p>Component</p>
-          </div>
-          <div className="col-fixed">
-            <p>Average</p>
-          </div>
-          <div className="col-fixed">
-            <p>Good</p>
-          </div>
-          <div className="col-fixed">
-            <p>Not Good</p>
-          </div>
-          <div className="col-fixed">
-            <p>Bad</p>
-          </div>
+        <div className="col-fixed">
+          <p>Average</p>
         </div>
-        <div className="grid nested-grid comp">
-          {componentList.map((component, idx) => (
-            <React.Fragment key={idx}>
-              <div
-                className="col-fixed"
-                style={{ width: "155px", textAlign: "left" }}
-              >
-                {component}
-              </div>
-              {stage1ColumnHeaders.map((header, index) => (
-                <div className="col-fixed" key={`${component}_${header}`}>
-                  <Checkbox
-                    inputId={`${component}_${header}`}
-                    checked={_entity && _entity[component] === header}
-                    onChange={(e) => setValByKey(component, header, e.checked)}
-                  />
-                </div>
-              ))}
-            </React.Fragment>
-          ))}
+        <div className="col-fixed">
+          <p>Good</p>
+        </div>
+        <div className="col-fixed">
+          <p>Not Good</p>
+        </div>
+        <div className="col-fixed">
+          <p>Bad</p>
         </div>
       </div>
-    </Dialog>
+      <div className="grid nested-grid comp">
+        {componentList.map((component, idx) => (
+          <React.Fragment key={idx}>
+            <div
+              className="col-fixed"
+              style={{ width: "155px", textAlign: "left" }}
+            >
+              {component}
+            </div>
+            {stage1ColumnHeaders.map((header, index) => (
+              <div className="col-fixed" key={`${component}_${header}`}>
+                <Checkbox
+                  inputId={`${component}_${header}`}
+                  checked={_entity && _entity[component] === header}
+                  // onChange={(e) => setValByKey(component, header, e.checked)}
+                />
+              </div>
+            ))}
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
   );
 };
 

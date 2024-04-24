@@ -80,13 +80,13 @@ const TicketDataTable = ({ items, onEditRow, tech, onRowClick }) => {
           sortable
           style={{ minWidth: "8rem" }}
         />
-        <Column
+        {/* <Column
           field="assignedTo"
           header="AssignedTo"
           body={pTemplate5}
           sortable
           style={{ minWidth: "8rem" }}
-        />
+        /> */}
         <Column
           field="DateAssigned"
           header="DateAssigned"
@@ -100,7 +100,7 @@ const TicketDataTable = ({ items, onEditRow, tech, onRowClick }) => {
           style={{ minWidth: "8rem" }}
         />
 
-        <Column header="Edit" body={editTemplate} />
+        {/* <Column header="Edit" body={editTemplate} /> */}
         {/* <Column header="Delete" body={deleteTemplate} /> */}
         <Column
           field="createdAt"

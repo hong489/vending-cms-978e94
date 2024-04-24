@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import client from "../../../services/restClient";
 import { Checkbox } from "primereact/checkbox";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
+import { Dialog } from "primereact/dialog";
 
 const getSchemaValidationErrorsStrings = (errorObj) => {
   let errMsg = [];
@@ -23,13 +25,11 @@ const HCstage2 = (props) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [Ref, setRef] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // replace this when there is a date field
-    // const init  = { todate : new Date(), from : new Date()};
-    // set_entity({...init});
-    set_entity({});
-  }, [props.show]);
+    set_entity(props.entity);
+  }, [props.entity, props.show]);
 
   const componentList = [
     "ExternalBody",
@@ -91,14 +91,14 @@ const HCstage2 = (props) => {
       IceMaker: _entity.IceMaker,
     };
 
-    // setLoading(true);
+    setLoading(true);
 
     try {
-      const result = await client.service("hcStage2").create(_data);
+      await client.service("hcStage2").patch(_entity._id, _data);
       const eagerResult = await client.service("hcStage2").find({
         query: {
           $limit: 100,
-          _id: { $in: [result._id] },
+          _id: { $in: [_entity._id] },
           $populate: [
             {
               path: "Ref",
@@ -111,43 +111,24 @@ const HCstage2 = (props) => {
       props.onHide();
       props.alert({
         type: "success",
-        title: "Create info",
+        title: "Edit info",
         message: "Info hcStage2 updated successfully",
       });
-      props.onCreateResult(eagerResult.data[0]);
+      props.onEditResult(eagerResult.data[0]);
+      navigate("/technician");
     } catch (error) {
       console.log("error", error);
-      setError(getSchemaValidationErrorsStrings(error) || "Failed to create");
+      setError(
+        getSchemaValidationErrorsStrings(error) || "Failed to update info",
+      );
       props.alert({
         type: "error",
-        title: "Create",
-        message: "Failed to create",
+        title: "Edit info",
+        message: "Failed to update info",
       });
     }
-    // setLoading(false);
+    setLoading(false);
   };
-
-  useEffect(() => {
-    //on mount hCMasterForm
-    client
-      .service("hCMasterForm")
-      .find({ query: { $limit: 100 } })
-      .then((res) => {
-        setRef(
-          res.data.map((e) => {
-            return { name: e["RefNo"], value: e._id };
-          }),
-        );
-      })
-      .catch((error) => {
-        console.log({ error });
-        props.alert({
-          title: "HCMasterForm",
-          type: "error",
-          message: error.message || "Failed get hCMasterForm",
-        });
-      });
-  }, []);
 
   const setValByKey = (component, value, checked) => {
     let new_entity = { ..._entity };
@@ -166,63 +147,90 @@ const HCstage2 = (props) => {
     setError("");
   };
 
-  const RefOptions = Ref.map((elem) => ({
-    name: elem.name,
-    value: elem.value,
-  }));
+  const renderFooter = () => (
+    <div className="flex justify-content-end">
+      <Button
+        label="save"
+        className="p-button-text no-focus-effect"
+        onClick={onSave}
+        loading={loading}
+      />
+      <Button
+        label="close"
+        className="p-button-text no-focus-effect p-button-secondary"
+        onClick={props.onHide}
+      />
+    </div>
+  );
 
   return (
-    <div className="card grid nested-grid col-5 stage2">
-      <div
-        className="text-center col-12 stagetitle"
-        style={{ height: "45 px" }}
-      >
-        <h3>STAGE 2</h3>
-      </div>
-      <div className="grid nested-grid col-12 list1">
-        <div className="col-fixed">
-          <p>Service</p>
+    <Dialog
+      header="Edit info"
+      visible={props.show}
+      closable={false}
+      onHide={props.onHide}
+      modal
+      style={{ width: "30vw" }}
+      footer={renderFooter()}
+      resizable={false}
+    >
+      <div className="card grid nested-grid col-12 stage2">
+        <div
+          className="text-center col-12 stagetitle"
+          style={{ height: "45 px" }}
+        >
+          <h3>STAGE 2</h3>
         </div>
-        <div className="col-fixed">
-          <p>Repair</p>
+        <div className="grid nested-grid col-12 list1">
+          <div className="col-fixed">
+            <p>Service</p>
+          </div>
+          <div className="col-fixed">
+            <p>Repair</p>
+          </div>
+          <div className="col-4">
+            <p>Replace/Exchange</p>
+          </div>
         </div>
-        <div className="col-4">
-          <p>Replace/Exchange</p>
+        <div className="grid nested-grid">
+          {componentList.map((component, idx) => (
+            <React.Fragment key={idx}>
+              {/* Checkbox for Service */}
+              <div className="col-fixed">
+                <Checkbox
+                  inputId={`service_${component}`}
+                  checked={_entity?.[component]}
+                  onChange={(e) => setValByKey(component, "service", e.checked)}
+                />
+              </div>
+              {/* Checkbox for Repair */}
+              <div className="col-fixed">
+                <Checkbox
+                  inputId={`repair_${component}`}
+                  checked={_entity?.[component]}
+                  onChange={(e) => setValByKey(component, "repair", e.checked)}
+                />
+              </div>
+              {/* Input field for Replace/Exchange */}
+              <div className="col-4 ">
+                <InputText
+                  className="replaceinput"
+                  value={_entity?.[component] || ""}
+                  onChange={(e) => setValByKey(component, e.target.value)}
+                />
+              </div>
+            </React.Fragment>
+          ))}
         </div>
       </div>
-      <div className="grid nested-grid">
-        {componentList.map((component, idx) => (
-          <React.Fragment key={idx}>
-            {/* Checkbox for Service */}
-            <div className="col-fixed">
-              <Checkbox
-                inputId={`service_${component}`}
-                checked={_entity?.[component]}
-                onChange={(e) => setValByKey(component, "service", e.checked)}
-              />
-            </div>
-            {/* Checkbox for Repair */}
-            <div className="col-fixed">
-              <Checkbox
-                inputId={`repair_${component}`}
-                checked={_entity?.[component]}
-                onChange={(e) => setValByKey(component, "repair", e.checked)}
-              />
-            </div>
-            {/* Input field for Replace/Exchange */}
-            <div className="col-4 ">
-              <InputText
-                className="replaceinput"
-                value={_entity?.[component] || ""}
-                onChange={(e) => setValByKey(component, e.target.value)}
-              />
-            </div>
-          </React.Fragment>
-        ))}
-      </div>
-      <Button label="save" onClick={onSave} loading={loading} />
-    </div>
+    </Dialog>
   );
 };
 
-export default HCstage2;
+const mapState = (state) => {
+  return {};
+};
+const mapDispatch = (dispatch) => ({
+  alert: (data) => dispatch.toast.alert(data),
+});
+export default connect(mapState, mapDispatch)(HCstage2);

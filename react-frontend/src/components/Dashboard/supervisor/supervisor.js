@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import client from "../../../services/restClient";
 import TicketDataTable from "./TicketDataTable";
@@ -29,7 +28,9 @@ const SupervisorTicketPage = (props) => {
 
   const fetchTechnicians = async () => {
     try {
-      const response = await client.service("Users").find({ query: { userType: "technician", $limit: 100 } });
+      const response = await client
+        .service("Users")
+        .find({ query: { userType: "technician", $limit: 100 } });
       setTech(response.data); // Set tech state with technician data
     } catch (error) {
       console.error("Error fetching technicians:", error);
@@ -44,7 +45,7 @@ const SupervisorTicketPage = (props) => {
   const handleEditResult = (updatedTicket) => {
     // Update ticket in the tickets array
     const updatedTickets = tickets.map((ticket) =>
-      ticket._id === updatedTicket._id ? updatedTicket : ticket
+      ticket._id === updatedTicket._id ? updatedTicket : ticket,
     );
     setTickets(updatedTickets);
     setShowEditDialog(false);
@@ -60,11 +61,7 @@ const SupervisorTicketPage = (props) => {
           onClick={fetchTickets}
         />
       </div>
-      <TicketDataTable
-        items={tickets}
-        onEditRow={handleEdit}
-        tech={tech}
-      />
+      <TicketDataTable items={tickets} onEditRow={handleEdit} tech={tech} />
       <SupervisorTicketEditDialogComponent
         entity={selectedTicket}
         show={showEditDialog}

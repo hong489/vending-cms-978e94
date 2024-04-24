@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import _ from "lodash";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import client from "../../../services/restClient";
 import { Calendar } from "primereact/calendar";
 import { InputText } from "primereact/inputtext";
@@ -22,15 +24,19 @@ const getSchemaValidationErrorsStrings = (errorObj) => {
   return errMsg.length ? errMsg : errorObj.message ? errorObj.message : null;
 };
 
-
 const CBMasterForm = (props) => {
   const [_entity, set_entity] = useState({});
+  const navigate = useNavigate();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    set_entity({});
-  }, [props.show]);
+    set_entity(props.entity);
+  }, [props.show, props.entity]);
+
+  const goBack = () => {
+    navigate(-1, { replace: true });
+  };
 
   const onSave = async () => {
     let _data = {
@@ -48,13 +54,24 @@ const CBMasterForm = (props) => {
     setLoading(true);
 
     try {
-      const result = await client.service("cBMasterForm").create(_data);
+      const MasterFormResult = await client
+        .service("cBMasterForm")
+        .create(_data);
+      const Stage1 = { Ref: MasterFormResult._id };
+      await client.service("cBStage1").create(Stage1);
+      const Stage1Agree = { Ref: MasterFormResult._id };
+      await client.service("cBStage1Agree").create(Stage1Agree);
+      const Stage2 = { Ref: MasterFormResult._id };
+      await client.service("cBStage2").create(Stage2);
+      const Stage2Agree = { Ref: MasterFormResult._id };
+      await client.service("cBStage2Agree").create(Stage2Agree);
       props.alert({
         type: "success",
         title: "Create info",
         message: "Info CBMasterForm created successfully",
       });
-      props.onCreateResult(result);
+      // props.onCreateResult(result);
+      navigate("/technician");
     } catch (error) {
       console.log("error", error);
       setError(getSchemaValidationErrorsStrings(error) || "Failed to create");
@@ -80,6 +97,11 @@ const CBMasterForm = (props) => {
           <div className="w-full flex justify-content-center flex-wrap">
             <div className="align-items-center flex ">
               <div className="card basecard ">
+                <Button
+                  className="p-button-text"
+                  icon="pi pi-chevron-left"
+                  onClick={() => goBack()}
+                />
                 <div
                   className="HCbanner"
                   style={{
@@ -204,10 +226,10 @@ const CBMasterForm = (props) => {
                     <small className="p-error">
                       {Array.isArray(error)
                         ? error.map((e, i) => (
-                          <p className="m-0" key={i}>
-                            {e}
-                          </p>
-                        ))
+                            <p className="m-0" key={i}>
+                              {e}
+                            </p>
+                          ))
                         : error}
                     </small>
                     <Button
@@ -218,14 +240,14 @@ const CBMasterForm = (props) => {
                     />
                   </div>
                 </div>
-                <div className="card grid nested-grid col-12 stageForm">
+                {/* <div className="card grid nested-grid col-12 stageForm">
                   <CBstage1 />
                   <CBstage2 />
                 </div>
                 <br />
 
                 <CBAgree1 />
-                <CBAgree2 />
+                <CBAgree2 /> */}
               </div>
             </div>
           </div>

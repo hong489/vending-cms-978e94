@@ -78,7 +78,7 @@ const TicketDialog = (props) => {
         title: "Create info",
         message: "Info ticket created successfully",
       });
-      props.onCreateResult(result);
+      // props.onCreateResult(result);
     } catch (error) {
       console.log("error", error);
       setError(getSchemaValidationErrorsStrings(error) || "Failed to create");

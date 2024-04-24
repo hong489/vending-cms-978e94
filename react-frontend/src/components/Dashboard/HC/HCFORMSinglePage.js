@@ -6,89 +6,40 @@ import client from "../../../services/restClient";
 import { Calendar } from "primereact/calendar";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import HCstage1 from "./HCstage1";
-import HCstage2 from "./HCstage2";
-import HCAgree1 from "./HCAgree1";
-import HCAgree2 from "./HCAgree2";
+import SingleHCstage1 from "./HCstage1SinglePage";
+import SingleHCstage2 from "./HCstage2SinglePage";
+import SingleHCAgree1 from "./HCAgree1SinglePage";
+import SingleHCAgree2 from "./HCAgree2SinglePage";
 
-const getSchemaValidationErrorsStrings = (errorObj) => {
-  let errMsg = [];
-  for (const key in errorObj.errors) {
-    if (Object.hasOwnProperty.call(errorObj.errors, key)) {
-      const element = errorObj.errors[key];
-      if (element?.message) {
-        errMsg.push(element.message);
-      }
-    }
-  }
-  return errMsg.length ? errMsg : errorObj.message ? errorObj.message : null;
-};
-
-const HCMasterForm = (props, user) => {
-  const [_entity, set_entity] = useState({});
+const SingleHCMasterForm = (props, user) => {
+  const [_entity, set_entity] = useState();
   const navigate = useNavigate();
+  const urlParams = useParams();
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [refNo, setRefNo] = useState([]);
 
   useEffect(() => {
-    set_entity(props.entity);
-  }, [props.show, props.entity]);
+    //on mount
+    client
+      .service("hCMasterForm")
+      .get(urlParams.singleHCMasterFormId, { query: { $populate: [] } })
+      .then((res) => {
+        set_entity(res || {});
+        setRefNo(_entity?.RefNo);
+        console.log("", _entity.RefNo);
+      })
+      .catch((error) => {
+        console.log({ error });
+        props.alert({
+          title: "HCMasterForm",
+          type: "error",
+          message: error.message || "Failed get hCMasterForm",
+        });
+      });
+  }, [props, urlParams.singleHCMasterFormId]);
 
   const goBack = () => {
     navigate(-1, { replace: true });
-  };
-
-  const onSave = async () => {
-    let _data = {
-      RefNo: _entity.RefNo,
-      Model: _entity.Model,
-      SerialNo: _entity.SerialNo,
-      ManuYear: _entity.ManuYear,
-      Branch: _entity.Branch,
-      DateInspec: _entity.DateInspec,
-      DateRecall: _entity.DateRecall,
-      RecallLoc: _entity.RecallLoc,
-      active: true,
-    };
-
-    setLoading(true);
-
-    try {
-      const MasterFormResult = await client
-        .service("hCMasterForm")
-        .create(_data);
-      const Stage1 = { Ref: MasterFormResult._id };
-      await client.service("hCStage1").create(Stage1);
-      const Stage1Agree = { Ref: MasterFormResult._id };
-      await client.service("hCStage1Agree").create(Stage1Agree);
-      const Stage2 = { Ref: MasterFormResult._id };
-      await client.service("hCStage2").create(Stage2);
-      const Stage2Agree = { Ref: MasterFormResult._id };
-      await client.service("hCStage2Agree").create(Stage2Agree);
-      props.alert({
-        type: "success",
-        title: "Create info",
-        message: "Info hCMasterForm created successfully",
-      });
-      navigate("/technician");
-
-      // props.onCreateResult(result);
-    } catch (error) {
-      console.log("error", error);
-      setError(getSchemaValidationErrorsStrings(error) || "Failed to create");
-      props.alert({
-        type: "error",
-        title: "Create",
-        message: "Failed to create",
-      });
-    }
-    setLoading(false);
-  };
-
-  const setValByKey = (key, val) => {
-    let new_entity = { ..._entity, [key]: val };
-    set_entity(new_entity);
-    setError("");
   };
 
   return (
@@ -135,7 +86,6 @@ const HCMasterForm = (props, user) => {
                           className="w-8"
                           placeholder="Internal Tracking no"
                           value={_entity?.RefNo}
-                          onChange={(e) => setValByKey("RefNo", e.target.value)}
                         />
                       </div>
                       <div>
@@ -144,7 +94,6 @@ const HCMasterForm = (props, user) => {
                           className="w-8"
                           placeholder="Machine model"
                           value={_entity?.Model}
-                          onChange={(e) => setValByKey("Model", e.target.value)}
                         />
                       </div>
                       <div>
@@ -153,9 +102,6 @@ const HCMasterForm = (props, user) => {
                           className="w-8"
                           placeholder="Machine Serial no"
                           value={_entity?.SerialNo}
-                          onChange={(e) =>
-                            setValByKey("SerialNo", e.target.value)
-                          }
                         />
                       </div>
                       <div>
@@ -164,9 +110,6 @@ const HCMasterForm = (props, user) => {
                           className="w-8"
                           placeholder="Manufacture year"
                           value={_entity?.ManuYear}
-                          onChange={(e) =>
-                            setValByKey("ManuYear", e.target.value)
-                          }
                         />
                       </div>
                     </div>
@@ -179,9 +122,6 @@ const HCMasterForm = (props, user) => {
                           className="w-8"
                           placeholder="Respected branch"
                           value={_entity?.Branch}
-                          onChange={(e) =>
-                            setValByKey("Branch", e.target.value)
-                          }
                         />
                       </div>
                       <div>
@@ -191,9 +131,6 @@ const HCMasterForm = (props, user) => {
                           dateFormat="dd/mm/yy hh:mm"
                           placeholder={"dd/mm/yy hh:mm"}
                           value={new Date(_entity?.DateInspec)}
-                          onChange={(e) =>
-                            setValByKey("DateInspec", e.target.value)
-                          }
                           showTime
                           showButtonBar
                         ></Calendar>
@@ -205,9 +142,6 @@ const HCMasterForm = (props, user) => {
                           dateFormat="dd/mm/yy hh:mm"
                           placeholder={"dd/mm/yy hh:mm"}
                           value={new Date(_entity?.DateRecall)}
-                          onChange={(e) =>
-                            setValByKey("DateRecall", e.target.value)
-                          }
                           showTime
                           showButtonBar
                         ></Calendar>
@@ -218,9 +152,6 @@ const HCMasterForm = (props, user) => {
                           className="w-8"
                           placeholder="Location name"
                           value={_entity?.RecallLoc}
-                          onChange={(e) =>
-                            setValByKey("RecallLoc", e.target.value)
-                          }
                         />
                       </div>
                     </div>
@@ -233,22 +164,15 @@ const HCMasterForm = (props, user) => {
                           ))
                         : error}
                     </small>
-                    <Button
-                      label="create"
-                      // className="p-button-text no-focus-effect"
-                      onClick={onSave}
-                      loading={loading}
-                    />
                   </div>
                 </div>
-                {/* <div className="card grid nested-grid col-12 stageForm">
-                  <HCstage1 />
-                  <HCstage2 />
+                <div className="card grid nested-grid col-12 stageForm">
+                  <SingleHCstage1 refNo={refNo} />
+                  <SingleHCstage2 />
                 </div>
                 <br />
-
-                <HCAgree1 />
-                <HCAgree2 /> */}
+                <SingleHCAgree1 />
+                <SingleHCAgree2 />
               </div>
             </div>
           </div>
@@ -266,4 +190,4 @@ const mapDispatch = (dispatch) => ({
   alert: (data) => dispatch.toast.alert(data),
 });
 
-export default connect(mapState, mapDispatch)(HCMasterForm);
+export default connect(mapState, mapDispatch)(SingleHCMasterForm);

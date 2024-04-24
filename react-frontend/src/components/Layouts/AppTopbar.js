@@ -22,6 +22,11 @@ const AppTopbar = (props) => {
       command: () => navigate("/account"),
     },
     {
+      label: "Kanban",
+      icon: "pi pi-desktop",
+      command: () => navigate("/kanban"),
+    },
+    {
       label: "LogOut",
       icon: "pi pi-fw pi-sign-out",
       template: (item) => {
